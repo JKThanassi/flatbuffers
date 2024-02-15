@@ -1997,11 +1997,11 @@ class TsGenerator : public BaseGenerator {
         code += NumToString(it - struct_def.fields.vec.begin()) + ", ";
         if (field.value.type.base_type == BASE_TYPE_BOOL) { code += "+"; }
         code += argname + ", ";
-        if (!IsScalar(field.value.type.base_type)) {
-          code += "0";
-        } else if (HasNullDefault(field)) {
+        if (HasNullDefault(field)) {
           code += "null";
-        } else {
+        } else if (!IsScalar(field.value.type.base_type)) {
+          code += "0";
+        }  else {
           if (field.value.type.base_type == BASE_TYPE_BOOL) { code += "+"; }
           code += GenDefaultValue(field, imports);
         }
