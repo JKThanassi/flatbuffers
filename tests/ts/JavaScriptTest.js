@@ -9,6 +9,7 @@ import { Stat } from './my-game/example/stat.js'
 import { Vec3 } from './my-game/example/vec3.js'
 import { Color } from './my-game/example/color.js';
 import { Any } from './my-game/example/any.js';
+import {ScalarStuff} from './optional-scalars.js'
 
 function main() {
 
@@ -49,6 +50,7 @@ function main() {
   testSharedStrings();
   testVectorOfStructs();
   testCreateByteVector();
+  testReadOptionalScalars();
 
   console.log('FlatBuffers test: completed successfully');
 }
@@ -460,6 +462,28 @@ function testNullStrings() {
   assert.strictEqual(builder.createSharedString(undefined), 0);
 }
 
+
+function testReadOptionalScalars() {
+  const builder = new flatbuffers.builder();
+  const offset = ScalarStuff.createScalarStuff(builder, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  fbb.finish(offset);
+
+  const scalarStuff = ScalarStuff.getRootAsScalarStuff(builder.dataBuffer());
+
+  assert.strictEqual(scalarStuff.maybeBool(), 0)
+  assert.strictEqual(scalarStuff.maybeI8(), 0)
+  assert.strictEqual(scalarStuff.maybeU8(), 0)
+  assert.strictEqual(scalarStuff.maybeF32(), 0)
+  assert.strictEqual(scalarStuff.maybeF64(), 0)
+  assert.strictEqual(scalarStuff.maybeI16(), 0)
+  assert.strictEqual(scalarStuff.maybeI32(), 0)
+  assert.strictEqual(scalarStuff.maybeI64(), 0)
+  assert.strictEqual(scalarStuff.maybeU16(), 0)
+  assert.strictEqual(scalarStuff.maybeU32(), 0)
+  assert.strictEqual(scalarStuff.maybeU64(), 0)
+  assert.strictEqual(scalarStuff.maybeEnum(), 0)
+}
+
 function testVectorOfStructs() {
   let monster = new MonsterT();
   monster.name = 'testVectorOfStructs';
@@ -484,7 +508,7 @@ function testCreateByteVector() {
   const builder = new flatbuffers.Builder();
   const required = builder.createString("required");
   const offset = builder.createByteVector(data);
-  
+
   Monster.startMonster(builder);
   Monster.addName(builder, required);
   Monster.addInventory(builder, offset)
